@@ -3,19 +3,22 @@ import argparse
 import logging
 import psycopg2
 import psycopg2.extensions
-
+import datetime
 import sys
 import getpass
 
 #Binary("\x00\x08\x0F").getquoted()
 
 def escape_value(value):
+    
     if value is None:
         return 'NULL'
     elif isinstance(value, str):
         #print(psycopg2.extensions.QuotedString(value.encode('utf-8')).getquoted())
         #print(psycopg2.extensions.QuotedString(value.encode('utf-8')).getquoted().decode('utf-8'))
         return psycopg2.extensions.QuotedString(value.encode('utf-8')).getquoted().decode('utf-8')
+    elif isinstance(value, datetime.datetime) or isinstance(value, datetime.date) or isinstance(value,datetime.time):
+        return psycopg2.extensions.QuotedString(str(value).encode('utf-8')).getquoted().decode('utf-8')
     else:
         return str(value)
 
